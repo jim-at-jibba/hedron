@@ -14,10 +14,32 @@ const prod = process.env.PRODUCTION;
 const env = prod ? "production" : "development";
 console.log(`Creating ${env} bundle...`);
 
-const globals= {
-  react: "React",
+const globals = {
+  "react": "React",
   "styled-components": "styled",
 }
+const output = prod
+  ? [{
+    file: "dist/hedron.min.js",
+    format: 'umd',
+    exports: 'named',
+    sourcemap: true,
+    name: 'hedron'
+  }]
+  : [{
+    file: "dist/hedron.js",
+    format: 'umd',
+    exports: 'named',
+    sourcemap: true,
+    name: 'hedron'
+  },
+    {
+    file: "dist/hedron.es.js",
+    format: 'es',
+    exports: 'named',
+    sourcemap: true,
+    name: 'hedron'
+  }];
 
 const commonPlugins = [
   {
@@ -52,7 +74,8 @@ const configBase = {
   input: './src/index.js',
   external: ["react", "styled-components"],
   plugins: commonPlugins,
-  moduleName: "hedron",
+  name: "hedron",
+  exports: 'named'
 };
 
 const nativeConfig = {
@@ -76,28 +99,11 @@ const nativeConfig = {
 
 const mainConfig = {
   ...configBase,
-  output: [
-    {
-      file: 'dist/hedron.js',
-      format: 'cjs',
-      exports: 'named',
-      sourcemap: true
-    },
-    {
-      file: 'dist/hedron.es.js',
-      format: 'es',
-      exports: 'named',
-      sourcemap: true
-    }
-  ],
-  plugins: configBase.plugins.concat(
-    replace({
-      __SERVER__: JSON.stringify(true),
-    })
-  ),
+  output,
+  plugins: commonPlugins,
+  globals
 };
 
 export default [
-  nativeConfig,
   mainConfig
 ];
