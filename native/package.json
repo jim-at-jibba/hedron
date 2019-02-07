@@ -1,0 +1,7 @@
+{
+  "name": "hedron/native",
+  "private": true,
+  "main": "./dist/hedron.native.cjs.js",
+  "jsnext:main": "./dist/hedron.native.esm.js",
+  "module": "./dist/hedron.native.esm.js"
+}

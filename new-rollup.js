@@ -7,19 +7,22 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import replace from "rollup-plugin-replace";
 import { uglify } from "rollup-plugin-uglify";
 import filesize from "rollup-plugin-filesize";
-import pkg from './package.json'
+
 const processShim = "\0process-shim";
 
 const prod = process.env.PRODUCTION;
 const env = prod ? "production" : "development";
+
 console.log(`Creating ${env} bundle...`);
 
-const globals= {
-  react: "React",
-  "styled-components": "styled",
-}
+const targets = prod
+  ? [{ dest: "dist/hedron.min.js", format: "umd" }]
+  : [
+      { dest: "dist/hedron.js", format: "umd" },
+      { dest: "dist/hedron.es.js", format: "es" },
+    ];
 
-const commonPlugins = [
+const plugins = [
   {
     resolveId(importee) {
       if (importee === processShim) return importee;
@@ -48,56 +51,17 @@ const commonPlugins = [
   }),
 ];
 
-const configBase = {
-  input: './src/index.js',
+if (prod) plugins.push(uglify());
+
+export default {
+  entry: "src/index.js",
+  exports: "named",
   external: ["react", "styled-components"],
-  plugins: commonPlugins,
+  globals: {
+    react: "React",
+    "styled-components": "styled",
+  },
   moduleName: "hedron",
+  plugins,
+  targets,
 };
-
-const nativeConfig = {
-  ...configBase,
-  input: './src/native/index.js',
-  output: [
-    {
-      file: 'native/dist/hedron.native.cjs.js',
-      format: 'cjs',
-      exports: 'named',
-      sourcemap: true
-    },
-    {
-      file: 'native/dist/hedron.native.es.js',
-      format: 'es',
-      exports: 'named',
-      sourcemap: true
-    }
-  ]
-}
-
-const mainConfig = {
-  ...configBase,
-  output: [
-    {
-      file: 'dist/hedron.js',
-      format: 'cjs',
-      exports: 'named',
-      sourcemap: true
-    },
-    {
-      file: 'dist/hedron.es.js',
-      format: 'es',
-      exports: 'named',
-      sourcemap: true
-    }
-  ],
-  plugins: configBase.plugins.concat(
-    replace({
-      __SERVER__: JSON.stringify(true),
-    })
-  ),
-};
-
-export default [
-  nativeConfig,
-  mainConfig
-];
