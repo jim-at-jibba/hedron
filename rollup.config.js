@@ -73,9 +73,7 @@ const commonPlugins = [
 const configBase = {
   input: './src/index.js',
   external: ["react", "styled-components"],
-  plugins: commonPlugins,
-  name: "hedron",
-  exports: 'named'
+  plugins: commonPlugins
 };
 
 const nativeConfig = {
