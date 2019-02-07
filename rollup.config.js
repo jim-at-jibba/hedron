@@ -103,5 +103,6 @@ const mainConfig = {
 };
 
 export default [
-  mainConfig
+  mainConfig,
+  nativeConfig
 ];

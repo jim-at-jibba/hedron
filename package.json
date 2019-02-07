@@ -17,7 +17,8 @@
     "lint:fix": "eslint --fix src",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "preinstall": "npm run build"
   },
   "bugs": {
     "url": "https://github.com/garetmckinley/hedron/issues"
